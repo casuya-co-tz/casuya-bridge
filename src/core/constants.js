@@ -1,0 +1,40 @@
+/** Shared constants for casuya-bridge. */
+
+export const BRIDGE_VERSION = '0.1.0';
+export const DB_NAME = 'casuya-bridge';
+export const DB_VERSION = 1;
+
+export const STORES = {
+  PACKAGES: 'packages',
+  ASSETS: 'assets',
+  MANIFESTS: 'manifests',
+  PROGRESS: 'progress',
+  QUEUE: 'sync-queue',
+};
+
+export const EVENTS = {
+  LESSON_LOADED: 'lesson:loaded',
+  LESSON_READY: 'lesson:ready',
+  LESSON_ERROR: 'lesson:error',
+  PROGRESS_UPDATED: 'progress:updated',
+  LESSON_COMPLETED: 'lesson:completed',
+  SYNC_STARTED: 'sync:started',
+  SYNC_SUCCESS: 'sync:success',
+  SYNC_FAILURE: 'sync:failure',
+  CONNECTIVITY_ONLINE: 'connectivity:online',
+  CONNECTIVITY_OFFLINE: 'connectivity:offline',
+};
+
+export const DEFAULT_CONFIG = {
+  apiBaseUrl: '',
+  dbName: DB_NAME,
+  dbVersion: DB_VERSION,
+  syncIntervalMs: 30_000,
+  maxRetries: 5,
+  retryBaseDelayMs: 1000,
+  batchSize: 20,
+  sandboxMode: 'iframe', // 'iframe' | 'shadow-dom'
+  theme: 'light',
+};
+
+export const RETRYABLE_STATUS_CODES = new Set([408, 425, 429, 500, 502, 503, 504]);
