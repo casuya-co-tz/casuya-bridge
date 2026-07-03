@@ -31,12 +31,14 @@ export function createEncryption(secret) {
     );
   }
 
+  const hasCrypto = typeof crypto !== 'undefined' && typeof crypto.subtle !== 'undefined';
+
   return {
-    isEnabled: true,
+    isEnabled: hasCrypto,
 
     async encrypt(data) {
-      if (typeof crypto === 'undefined' || !crypto.subtle) {
-        return btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+      if (!hasCrypto) {
+        return data;
       }
       try {
         const iv = crypto.getRandomValues(new Uint8Array(12));
@@ -53,12 +55,8 @@ export function createEncryption(secret) {
     },
 
     async decrypt(payload) {
-      if (typeof crypto === 'undefined' || !crypto.subtle) {
-        try {
-          return JSON.parse(decodeURIComponent(escape(atob(payload))));
-        } catch {
-          return payload;
-        }
+      if (!hasCrypto) {
+        return payload;
       }
       try {
         const raw = Uint8Array.from(atob(payload), (c) => c.charCodeAt(0));

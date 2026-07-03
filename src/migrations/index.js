@@ -3,6 +3,7 @@
  * from one version to the next. */
 
 import { MigrationError } from '../core/errors.js';
+import { STORES } from '../core/constants.js';
 
 export class MigrationEngine {
   constructor({ db, currentVersion = 1 }) {
@@ -40,7 +41,7 @@ export class MigrationEngine {
 
   async _getStoredVersion() {
     try {
-      const v = await this._db.get('meta', 'schema_version');
+      const v = await this._db.get(STORES.META, 'schema_version');
       return v ?? 0;
     } catch {
       return 0;
@@ -48,6 +49,6 @@ export class MigrationEngine {
   }
 
   async _setStoredVersion(version) {
-    await this._db.put('meta', 'schema_version', version);
+    await this._db.put(STORES.META, 'schema_version', version);
   }
 }

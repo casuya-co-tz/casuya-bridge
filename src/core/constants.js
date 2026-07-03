@@ -10,6 +10,7 @@ export const STORES = {
   MANIFESTS: 'manifests',
   PROGRESS: 'progress',
   QUEUE: 'sync-queue',
+  META: 'meta',
 };
 
 export const EVENTS = {

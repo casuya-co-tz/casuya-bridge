@@ -15,13 +15,17 @@ export class NetworkRecovery {
   }
 
   start() {
-    this._bus?.on(EVENTS.CONNECTIVITY_ONLINE, () => this._onReconnect());
+    this._boundReconnect = () => this._onReconnect();
+    this._bus?.on(EVENTS.CONNECTIVITY_ONLINE, this._boundReconnect);
   }
 
   stop() {
     if (this._timer) clearTimeout(this._timer);
     this._timer = null;
-    this._bus?.off(EVENTS.CONNECTIVITY_ONLINE, () => this._onReconnect());
+    if (this._boundReconnect) {
+      this._bus?.off(EVENTS.CONNECTIVITY_ONLINE, this._boundReconnect);
+      this._boundReconnect = null;
+    }
   }
 
   async _onReconnect() {

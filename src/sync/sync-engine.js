@@ -73,7 +73,7 @@ export class SyncEngine {
             attempt += 1;
             continue;
           }
-          await this._deadLetter(batch, `HTTP ${response.status}`);
+          await this._deadLetter(batch, attempt, `HTTP ${response.status}`);
           return;
         }
         for (const record of batch) await this._queue.remove(record.id);
@@ -84,18 +84,19 @@ export class SyncEngine {
           attempt += 1;
           continue;
         }
-        await this._deadLetter(batch, err.message);
+        await this._deadLetter(batch, attempt, err.message);
         return;
       }
     }
   }
 
-  async _deadLetter(batch, reason) {
+  async _deadLetter(batch, attemptsMade, reason) {
     for (const record of batch) {
-      if (record.attempts >= MAX_DEAD_LETTER_ATTEMPTS) {
+      const totalAttempts = (record.attempts ?? 0) + attemptsMade;
+      if (totalAttempts >= MAX_DEAD_LETTER_ATTEMPTS) {
         await this._queue.remove(record.id);
       } else {
-        await this._queue.updateAttempts(record.id, record.attempts + 1);
+        await this._queue.updateAttempts(record.id, totalAttempts);
       }
     }
   }
