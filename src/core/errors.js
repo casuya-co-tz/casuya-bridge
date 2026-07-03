@@ -1,4 +1,4 @@
-/** Custom error hierarchy for casuya-bridge. */
+/** Error hierarchy for casuya-bridge. */
 
 export class BridgeError extends Error {
   constructor(message, { cause } = {}) {
@@ -7,10 +7,12 @@ export class BridgeError extends Error {
   }
 }
 
-export class RenderError extends BridgeError {}
-export class StorageErrorBridge extends BridgeError {}
+export class StorageError extends BridgeError {}
 export class SyncError extends BridgeError {}
+export class ConflictError extends SyncError {}
 export class NetworkError extends BridgeError {}
 export class SecurityError extends BridgeError {}
-export class ValidationErrorBridge extends BridgeError {}
+export class ValidationError extends BridgeError {}
 export class ConfigError extends BridgeError {}
+export class CompressionError extends BridgeError {}
+export class MigrationError extends BridgeError {}

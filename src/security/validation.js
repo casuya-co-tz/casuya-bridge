@@ -1,6 +1,6 @@
 /** Structural validation of a decoded lesson package before rendering. */
 
-import { ValidationErrorBridge } from '../core/errors.js';
+import { ValidationError } from '../core/errors.js';
 
 const REQUIRED_FILES = ['body.html', 'manifest.json'];
 
@@ -22,7 +22,7 @@ export function validatePackageShape(files) {
 export function validatePackageShapeOrThrow(files) {
   const result = validatePackageShape(files);
   if (!result.isValid) {
-    throw new ValidationErrorBridge(`Invalid package: ${result.errors.join('; ')}`);
+    throw new ValidationError(`Invalid package: ${result.errors.join('; ')}`);
   }
   return result;
 }

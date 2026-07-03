@@ -3,8 +3,6 @@
 import { DEFAULT_CONFIG } from './constants.js';
 import { ConfigError } from './errors.js';
 
-const VALID_SANDBOX_MODES = new Set(['iframe', 'shadow-dom']);
-
 export function resolveConfig(overrides = {}) {
   const config = { ...DEFAULT_CONFIG, ...overrides };
 
@@ -14,10 +12,8 @@ export function resolveConfig(overrides = {}) {
   if (typeof config.maxRetries !== 'number' || config.maxRetries < 0) {
     throw new ConfigError('maxRetries must be a non-negative number');
   }
-  if (!VALID_SANDBOX_MODES.has(config.sandboxMode)) {
-    throw new ConfigError(
-      `sandboxMode must be one of ${[...VALID_SANDBOX_MODES].join(', ')}`
-    );
+  if (config.encryptionKey !== null && typeof config.encryptionKey !== 'string') {
+    throw new ConfigError('encryptionKey must be a string or null');
   }
 
   return Object.freeze(config);

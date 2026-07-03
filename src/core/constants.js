@@ -13,9 +13,6 @@ export const STORES = {
 };
 
 export const EVENTS = {
-  LESSON_LOADED: 'lesson:loaded',
-  LESSON_READY: 'lesson:ready',
-  LESSON_ERROR: 'lesson:error',
   PROGRESS_UPDATED: 'progress:updated',
   LESSON_COMPLETED: 'lesson:completed',
   SYNC_STARTED: 'sync:started',
@@ -23,6 +20,9 @@ export const EVENTS = {
   SYNC_FAILURE: 'sync:failure',
   CONNECTIVITY_ONLINE: 'connectivity:online',
   CONNECTIVITY_OFFLINE: 'connectivity:offline',
+  QUEUE_DRAINED: 'queue:drained',
+  STORAGE_QUOTA_EXCEEDED: 'storage:quota_exceeded',
+  CONFLICT_DETECTED: 'conflict:detected',
 };
 
 export const DEFAULT_CONFIG = {
@@ -33,8 +33,9 @@ export const DEFAULT_CONFIG = {
   maxRetries: 5,
   retryBaseDelayMs: 1000,
   batchSize: 20,
-  sandboxMode: 'iframe', // 'iframe' | 'shadow-dom'
-  theme: 'light',
+  encryptionKey: null,
+  compressionEnabled: true,
+  maxStorageBytes: 50 * 1024 * 1024,
 };
 
 export const RETRYABLE_STATUS_CODES = new Set([408, 425, 429, 500, 502, 503, 504]);

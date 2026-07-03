@@ -1,4 +1,4 @@
-/** Public-facing facade class — the main entry point consumers instantiate. */
+/** Public-facing facade class -- the main entry point consumers instantiate. */
 
 import { createRuntime } from './runtime.js';
 
@@ -19,13 +19,6 @@ export class CasuyaBridge {
 
   on(event, handler) {
     return this._runtime.bus.on(event, handler);
-  }
-
-  async renderLesson(slug, mountEl) {
-    if (!this._runtime.renderer) {
-      throw new Error('renderLesson requires a DOM environment (document is undefined)');
-    }
-    return this._runtime.renderer.render(slug, mountEl);
   }
 
   startSession(options) {
@@ -52,7 +45,6 @@ export class CasuyaBridge {
     return this._runtime.connectivity.isOnline;
   }
 
-  /** Escape hatch for advanced consumers who need direct subsystem access. */
   get runtime() {
     return this._runtime;
   }

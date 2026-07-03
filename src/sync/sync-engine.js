@@ -8,6 +8,8 @@ import { uploadBatch } from './uploads.js';
 import { downloadManifests, downloadPackage } from './downloads.js';
 import { sleep } from '../utils/helpers.js';
 
+const MAX_DEAD_LETTER_ATTEMPTS = 10;
+
 export class SyncEngine {
   constructor({ bus, queue, manifestStore, packageStore, config, fetchImpl }) {
     this._bus = bus;
@@ -60,8 +62,6 @@ export class SyncEngine {
 
   async _uploadBatchWithRetry(batch) {
     let attempt = 0;
-    // Attempts are tracked per-batch here; individual records are removed
-    // from the queue once the whole batch succeeds.
     while (true) {
       try {
         const response = await uploadBatch(this._config.apiBaseUrl, batch, {
@@ -73,7 +73,8 @@ export class SyncEngine {
             attempt += 1;
             continue;
           }
-          throw new Error(`Sync upload failed with status ${response.status}`);
+          await this._deadLetter(batch, `HTTP ${response.status}`);
+          return;
         }
         for (const record of batch) await this._queue.remove(record.id);
         return response;
@@ -83,7 +84,18 @@ export class SyncEngine {
           attempt += 1;
           continue;
         }
-        throw err;
+        await this._deadLetter(batch, err.message);
+        return;
+      }
+    }
+  }
+
+  async _deadLetter(batch, reason) {
+    for (const record of batch) {
+      if (record.attempts >= MAX_DEAD_LETTER_ATTEMPTS) {
+        await this._queue.remove(record.id);
+      } else {
+        await this._queue.updateAttempts(record.id, record.attempts + 1);
       }
     }
   }

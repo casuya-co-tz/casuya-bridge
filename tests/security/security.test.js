@@ -4,7 +4,7 @@ import { signPayload, verifySignature, verifyOrThrow } from '../../src/security/
 import { sha256Hex, verifyContentHash, verifyContentHashOrThrow } from '../../src/security/integrity.js';
 import { validatePackageShape, validatePackageShapeOrThrow } from '../../src/security/validation.js';
 import { stripScripts, toPlainTextSnippet } from '../../src/security/sanitization.js';
-import { SecurityError, ValidationErrorBridge } from '../../src/core/errors.js';
+import { SecurityError, ValidationError } from '../../src/core/errors.js';
 
 test('sign/verify roundtrip succeeds with correct key', async () => {
   const sig = await signPayload('hello', 'secret');
@@ -44,7 +44,7 @@ test('validatePackageShape requires body.html and manifest.json', () => {
 test('validatePackageShapeOrThrow throws on bad manifest JSON', () => {
   assert.throws(
     () => validatePackageShapeOrThrow({ 'body.html': '<p>x</p>', 'manifest.json': '{not json' }),
-    ValidationErrorBridge
+    ValidationError
   );
 });
 

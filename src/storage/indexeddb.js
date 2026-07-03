@@ -1,7 +1,7 @@
 /** Thin promise-based wrapper around IndexedDB, with an in-memory fallback
  * for environments where indexedDB is unavailable (Node/tests/older WebViews). */
 
-import { StorageErrorBridge } from '../core/errors.js';
+import { StorageError } from '../core/errors.js';
 import { STORES, DB_VERSION } from '../core/constants.js';
 
 class MemoryStore {
@@ -61,7 +61,7 @@ class IndexedDBStore {
       };
       request.onsuccess = () => resolve(request.result);
       request.onerror = () =>
-        reject(new StorageErrorBridge(`Failed to open IndexedDB '${this.dbName}'`, {
+        reject(new StorageError(`Failed to open IndexedDB '${this.dbName}'`, {
           cause: request.error,
         }));
     });
@@ -77,7 +77,7 @@ class IndexedDBStore {
     return new Promise((resolve, reject) => {
       const req = objectStore.get(key);
       req.onsuccess = () => resolve(req.result ?? null);
-      req.onerror = () => reject(new StorageErrorBridge('get failed', { cause: req.error }));
+      req.onerror = () => reject(new StorageError('get failed', { cause: req.error }));
     });
   }
 
@@ -86,7 +86,7 @@ class IndexedDBStore {
     return new Promise((resolve, reject) => {
       const req = objectStore.put(value, key);
       req.onsuccess = () => resolve(value);
-      req.onerror = () => reject(new StorageErrorBridge('put failed', { cause: req.error }));
+      req.onerror = () => reject(new StorageError('put failed', { cause: req.error }));
     });
   }
 
@@ -95,7 +95,7 @@ class IndexedDBStore {
     return new Promise((resolve, reject) => {
       const req = objectStore.delete(key);
       req.onsuccess = () => resolve();
-      req.onerror = () => reject(new StorageErrorBridge('delete failed', { cause: req.error }));
+      req.onerror = () => reject(new StorageError('delete failed', { cause: req.error }));
     });
   }
 
@@ -104,7 +104,7 @@ class IndexedDBStore {
     return new Promise((resolve, reject) => {
       const req = objectStore.getAllKeys();
       req.onsuccess = () => resolve(req.result);
-      req.onerror = () => reject(new StorageErrorBridge('keys failed', { cause: req.error }));
+      req.onerror = () => reject(new StorageError('keys failed', { cause: req.error }));
     });
   }
 
@@ -113,7 +113,7 @@ class IndexedDBStore {
     return new Promise((resolve, reject) => {
       const req = objectStore.getAll();
       req.onsuccess = () => resolve(req.result);
-      req.onerror = () => reject(new StorageErrorBridge('values failed', { cause: req.error }));
+      req.onerror = () => reject(new StorageError('values failed', { cause: req.error }));
     });
   }
 
@@ -122,7 +122,7 @@ class IndexedDBStore {
     return new Promise((resolve, reject) => {
       const req = objectStore.clear();
       req.onsuccess = () => resolve();
-      req.onerror = () => reject(new StorageErrorBridge('clear failed', { cause: req.error }));
+      req.onerror = () => reject(new StorageError('clear failed', { cause: req.error }));
     });
   }
 }
