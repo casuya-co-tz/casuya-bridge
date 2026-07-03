@@ -2,10 +2,12 @@
  * using the Web Crypto API (SubtleCrypto). */
 
 import { SecurityError } from '../core/errors.js';
+import { getSubtle } from './crypto.js';
 
 async function importKey(secret) {
+  const subtle = await getSubtle();
   const enc = new TextEncoder();
-  return crypto.subtle.importKey(
+  return subtle.importKey(
     'raw',
     enc.encode(secret),
     { name: 'HMAC', hash: 'SHA-256' },
@@ -19,8 +21,9 @@ function toHex(buffer) {
 }
 
 export async function signPayload(payload, secret) {
+  const subtle = await getSubtle();
   const key = await importKey(secret);
-  const signature = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(payload));
+  const signature = await subtle.sign('HMAC', key, new TextEncoder().encode(payload));
   return toHex(signature);
 }
 
